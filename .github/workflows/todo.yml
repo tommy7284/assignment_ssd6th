@@ -1,0 +1,23 @@
+name: Check TODOs
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  detect-todos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Scan for TODO comments
+        # grepコマンドで "TODO" を含む行を再帰的に検索して表示します。
+        # "|| true" をつけることで、TODOが見つからなくても（grepが終了コード1を返しても）
+        # CIを失敗させずに通過させます（レポート用にログを残すことが目的のため）。
+        run: |
+          echo "=== TODO Comment Detection Start ==="
+          grep -rn "TODO" . || echo "No TODO comments found."
+          echo "=== TODO Comment Detection End ==="
