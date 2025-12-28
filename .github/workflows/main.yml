@@ -1,0 +1,47 @@
+name: CI Workflow for Assignment
+
+on: [push, pull_request]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. チェックアウト (基本)
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Pythonのセットアップ (基本)
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      # 3. 依存関係のインストール
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # ---------------------------------------------------
+      # CI 1: Linter (授業で扱ったもの) [cite: 639-700]
+      # 目的: コードスタイルの自動チェックと整形
+      # ---------------------------------------------------
+      - name: Run Linter (Ruff)
+        run: |
+          ruff check .
+          ruff format --check .
+
+      # ---------------------------------------------------
+      # CI 2: Unit Test (授業で扱ったもの) [cite: 327-384]
+      # 目的: コードが正常に動作するかテストする
+      # ---------------------------------------------------
+      - name: Run Tests (Pytest)
+        run: |
+          # テストファイルがあるディレクトリを指定してください
+          pytest tests/ -v
+
+      # CI 3: TODOコメントの検出 (授業外)
+      - name: Check for TODOs
+        uses: ribozz/todo-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
