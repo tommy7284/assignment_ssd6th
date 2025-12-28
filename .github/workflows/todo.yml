@@ -16,7 +16,7 @@ jobs:
       - name: Fail if TODOs are found
         run: |
           # "TODO" を検索します
-          if grep -rn "TODO" .; then
+          if grep -rn "TODO" src tests; then
               echo "---------------------------------------------------"
               echo "❌ Error: TODO comments detected!"
               echo "Please resolve all TODOs before merging."
