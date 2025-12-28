@@ -1,5 +1,4 @@
 # TODO: 後でこのインポート処理を見直す
-import os  # Linterに検知させるための不要なインポート
 
 
 def check_even_odd(number):
