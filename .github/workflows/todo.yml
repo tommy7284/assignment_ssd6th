@@ -13,11 +13,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Scan for TODO comments
-        # grepコマンドで "TODO" を含む行を再帰的に検索して表示します。
-        # "|| true" をつけることで、TODOが見つからなくても（grepが終了コード1を返しても）
-        # CIを失敗させずに通過させます（レポート用にログを残すことが目的のため）。
+      - name: Fail if TODOs are found
         run: |
-          echo "=== TODO Comment Detection Start ==="
-          grep -rn "TODO" . || echo "No TODO comments found."
-          echo "=== TODO Comment Detection End ==="
+          # "TODO" を検索します
+          if grep -rn "TODO" .; then
+              echo "---------------------------------------------------"
+              echo "❌ Error: TODO comments detected!"
+              echo "Please resolve all TODOs before merging."
+              echo "---------------------------------------------------"
+              # ここで exit 1 を返すと、GitHub Actionsが「失敗」扱いになります
+              exit 1
+          else
+              echo "✅ Success: No TODO comments found."
+          fi
